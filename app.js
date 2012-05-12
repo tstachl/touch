@@ -1,11 +1,19 @@
+Ext.Loader.setPath({
+    'Force': 'lib/force'
+});
+
 Ext.application({
     name: 'touch',
 
     requires: [
-        'Ext.MessageBox'
+        'Ext.MessageBox',
+        'Ext.data.Store',
+        'Force.data.Model',
+        'Force.data.Proxy'
     ],
 
     views: ['Main'],
+    controllers: ['Login'],
 
     icon: {
         '57': 'resources/icons/Icon.png',
@@ -24,11 +32,14 @@ Ext.application({
         '1536x2008': 'resources/startup/1536x2008.png',
         '1496x2048': 'resources/startup/1496x2048.png'
     },
+    
+    salesforceClientId: '',
+    salesforceClientSecret: '',
 
     launch: function() {
         // Destroy the #appLoadingIndicator element
         Ext.fly('appLoadingIndicator').destroy();
-
+        
         // Initialize the main view
         Ext.Viewport.add(Ext.create('touch.view.Main'));
     },
