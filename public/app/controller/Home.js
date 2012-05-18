@@ -78,7 +78,14 @@ Ext.define('touch.controller.Home', {
       message: 'Authenticating ...'
     });
     
-    Force.Auth.setConfig(Ext.getCmp('homelogin').getValues());
+    var hash = Ext.getCmp('homelogin').getValues();
+    if (hash.security)
+      hash.password += '9kDL1gICkkIw51huUJNdOQfoQ'
+    
+    Force.Auth.setConfig({
+      username: hash.username,
+      password: hash.password
+    });
     Force.Auth.authenticate();
   },
   

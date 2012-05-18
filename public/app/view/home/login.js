@@ -4,7 +4,8 @@ Ext.define("touch.view.home.login", {
     'Ext.TitleBar',
     'Ext.field.Email',
     'Ext.field.Password',
-    'Ext.form.FieldSet'
+    'Ext.form.FieldSet',
+    'Ext.field.Checkbox'
   ],
   id: 'homelogin',
     
@@ -28,6 +29,10 @@ Ext.define("touch.view.home.login", {
         name: 'password',
         label: 'Password',
         id: 'loginFormPasswordField'
+      }, {
+        xtype: 'checkboxfield',
+        name: 'security',
+        label: 'Attach Security Token'
       }]
     }, {
       xtype: 'toolbar',
