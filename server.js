@@ -6,7 +6,7 @@ var express    = require('express'),
     request    = require('request'),
 
 // Variables
-    port       = process.argv.slice(2)[0] || process.env.PORT || 9294,
+    port       = process.env.PORT || 9294,
     env        = process.env.NODE_ENV || 'development',
     address, serverHostname, serverPort, serverLocation, makeRequest, isEmptyObject, serialize,
 
