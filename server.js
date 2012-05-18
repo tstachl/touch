@@ -6,7 +6,6 @@ var express    = require('express'),
     request    = require('request'),
 
 // Variables
-    publicPath = path.resolve(process.argv[2] || '.'),
     port       = process.argv.slice(2)[0] || process.env.PORT || 9294,
     env        = process.env.NODE_ENV || 'development',
     address, serverHostname, serverPort, serverLocation, makeRequest, isEmptyObject, serialize,
@@ -27,15 +26,15 @@ server.configure(function() {
   
   // Routing
   server.use(server.router);
-  server.use(express.static(publicPath));
-  server.use(express.directory(publicPath));
+  server.use(express.static('public'));
+  //server.use(express.directory(publicPath));
 });
 
 isEmptyObject = function( obj ) {
-	for ( var name in obj ) {
-		return false;
-	}
-	return true;
+  for ( var name in obj ) {
+    return false;
+  }
+  return true;
 };
 
 serialize = function(obj) {
@@ -65,7 +64,6 @@ makeRequest = function(req, rsp) {
   }
   
   request(options, function(e, r, body) {
-    //console.log(body);
     if (body) {
       rsp.send(body, r.headers, r.statusCode);
     } else {
@@ -77,11 +75,14 @@ makeRequest = function(req, rsp) {
 server.all('/api', makeRequest);
 
 // Listen
-server.listen(port);
-
-// Log
-address = server.address();
-serverHostname = address.address == '0.0.0.0' ? 'localhost' : address.address;
-serverPort = address.port;
-serverLocation = 'http://' + serverHostname + ':' + serverPort + '/';
-console.log('Simple-Server listening to ' + serverLocation + ' with directory ' + publicPath);
+server.listen(port, function() {
+  if (env !== 'development') console.log("Listening on " + port);
+  else {
+    // Log
+    address = server.address();
+    serverHostname = address.address == '0.0.0.0' ? 'localhost' : address.address;
+    serverPort = address.port;
+    serverLocation = 'http://' + serverHostname + ':' + serverPort + '/';
+    console.log('Simple-Server listening to ' + serverLocation + ' with directory ./public');
+  }
+});
