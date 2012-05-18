@@ -8,13 +8,14 @@ var express    = require('express'),
 // Variables
     publicPath = path.resolve(process.argv[2] || '.'),
     port       = process.argv.slice(2)[0] || process.env.PORT || 9294,
+    env        = process.env.NODE_ENV || 'development',
     address, serverHostname, serverPort, serverLocation, makeRequest, isEmptyObject, serialize,
 
 // Create Server
     server     = express.createServer({
-      ca:   fs.readFileSync('certs/sub.class1.server.ca.pem'),
-      key:  fs.readFileSync('certs/ssl.key'),
-      cert: fs.readFileSync('certs/ssl.crt')
+      ca:   env == 'development' ? fs.readFileSync('certs/sub.class1.server.ca.pem') : null,
+      key:  env == 'development' ? fs.readFileSync('certs/ssl.key') : null,
+      cert: env == 'development' ? fs.readFileSync('certs/ssl.crt') : null
     });
 
 // Configure
