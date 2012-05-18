@@ -15,5 +15,39 @@
 @include sencha-carousel;
 @include sencha-form;
 @include sencha-msgbox;
+@include sencha-loading-spinner;
+@include pictos-iconmask('address_book');
+@include pictos-iconmask('check_black1');
 
-// Your custom code goes here...
+.x-list .x-list-item.x-item-selected.x-item-decline .x-list-item-label {
+  @include background-gradient($alert-color, $base-gradient);
+  @include color-by-background($alert-color);
+  @include bevel-by-background($alert-color);
+}
+
+.contacts-header {
+  min-height: 90px;
+  .contacts-picture {
+    padding: 5px;
+    background-color: #F7F7F7;
+    float: left;
+    border: 1px solid lightgray;
+    margin: 0 10px 10px 0;
+    img {
+      height: 60px;
+      width: 60px;
+    }
+  }
+  h3 {
+    margin-bottom: 0;
+    padding-top: 1em;
+  }
+}
+.contacts-body {
+  .x-input-el {
+    padding: .5em;
+  }
+  .x-form-label {
+    font-weight: bold;
+  }
+}

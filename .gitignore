@@ -10,7 +10,12 @@ lib-cov
 pids
 logs
 results
+certs
 
 node_modules
 npm-debug.log
 .senchasdk
+.redcar
+.DS_Store
+.c9revisions
+.sass-cache

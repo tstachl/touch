@@ -1,22 +1,24 @@
+'use strict';
 // Requirements
 var express    = require('express'),
     path       = require('path'),
     fs         = require('fs'),
+    request    = require('request'),
 
 // Variables
     publicPath = path.resolve(process.argv[2] || '.'),
     port       = process.argv.slice(2)[0] || process.env.PORT || 9294,
-    address, serverHostname, serverPort, serverLocation,
+    address, serverHostname, serverPort, serverLocation, makeRequest, isEmptyObject, serialize,
 
 // Create Server
     server     = express.createServer({
-      key: '', //fs.readFileSync('test/fixtures/keys/agent2-key.pem'),
-      cert: '', //fs.readFileSync('test/fixtures/keys/agent2-cert.pem')
+      ca:   fs.readFileSync('certs/sub.class1.server.ca.pem'),
+      key:  fs.readFileSync('certs/ssl.key'),
+      cert: fs.readFileSync('certs/ssl.crt')
     });
 
 // Configure
 server.configure(function() {
-  'use strict';
   // Standard
   server.use(express.errorHandler());
   server.use(express.bodyParser());
@@ -27,6 +29,51 @@ server.configure(function() {
   server.use(express.static(publicPath));
   server.use(express.directory(publicPath));
 });
+
+isEmptyObject = function( obj ) {
+	for ( var name in obj ) {
+		return false;
+	}
+	return true;
+};
+
+serialize = function(obj) {
+  var str = [];
+  for(var p in obj)
+     str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+  return str.join("&");
+};
+
+makeRequest = function(req, rsp) {
+  var options = {}; 
+  options.headers = {};
+  for (var key in req.headers) {
+    if (key.indexOf('accept-') === 0) continue;
+    options.headers[key.charAt(0).toUpperCase() + key.substr(1)] = req.headers[key];
+  }
+
+  options.url = req.headers.proxy;
+  options.method = req.method;
+  
+  if (!isEmptyObject(req.body)) {
+    if (req.headers['content-type'].indexOf('x-www-form') !== -1) {
+      options.body = serialize(req.body);
+    } else {
+      options.body = JSON.stringify(req.body);
+    }
+  }
+  
+  request(options, function(e, r, body) {
+    //console.log(body);
+    if (body) {
+      rsp.send(body, r.headers, r.statusCode);
+    } else {
+      rsp.send(r.headers, r.statusCode);
+    }
+  });
+};
+
+server.all('/api', makeRequest);
 
 // Listen
 server.listen(port);
