@@ -35,53 +35,53 @@ server.configure(function() {
   server.use(express.static(publicPath));
 });
 
-// isEmptyObject = function( obj ) {
-//   for ( var name in obj ) {
-//     return false;
-//   }
-//   return true;
-// };
-// 
-// serialize = function(obj) {
-//   var str = [];
-//   for(var p in obj)
-//      str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-//   return str.join("&");
-// };
-// 
-// makeRequest = function(req, rsp) {
-//   var options = {}; 
-//   options.headers = {};
-//   for (var key in req.headers) {
-//     if (key.indexOf('accept-') === 0) continue;
-//     options.headers[key.charAt(0).toUpperCase() + key.substr(1)] = req.headers[key];
-//   }
-// 
-//   options.url = req.headers.proxy;
-//   options.method = req.method;
-//   
-//   if (!isEmptyObject(req.body)) {
-//     if (req.headers['content-type'].indexOf('x-www-form') !== -1) {
-//       options.body = serialize(req.body);
-//     } else {
-//       options.body = JSON.stringify(req.body);
-//     }
-//   }
-//   
-//   request(options, function(e, r, body) {
-//     if (body) {
-//       rsp.send(body, r.headers, r.statusCode);
-//     } else {
-//       rsp.send(r.headers, r.statusCode);
-//     }
-//   });
-// };
+isEmptyObject = function( obj ) {
+  for ( var name in obj ) {
+    return false;
+  }
+  return true;
+};
 
-//server.all('/api', makeRequest);
+serialize = function(obj) {
+  var str = [];
+  for(var p in obj)
+     str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+  return str.join("&");
+};
+
+makeRequest = function(req, rsp) {
+  var options = {}; 
+  options.headers = {};
+  for (var key in req.headers) {
+    if (key.indexOf('accept-') === 0) continue;
+    options.headers[key.charAt(0).toUpperCase() + key.substr(1)] = req.headers[key];
+  }
+
+  options.url = req.headers.proxy;
+  options.method = req.method;
+  
+  if (!isEmptyObject(req.body)) {
+    if (req.headers['content-type'].indexOf('x-www-form') !== -1) {
+      options.body = serialize(req.body);
+    } else {
+      options.body = JSON.stringify(req.body);
+    }
+  }
+  
+  request(options, function(e, r, body) {
+    if (body) {
+      rsp.send(body, r.headers, r.statusCode);
+    } else {
+      rsp.send(r.headers, r.statusCode);
+    }
+  });
+};
+
 server.get('/', function(req, res) {
   res.contentType(index);
   res.sendfile(index);
 });
+server.all('/api', makeRequest);
 
 // Listen
 server.listen(port, function() {
