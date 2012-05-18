@@ -8,6 +8,8 @@ var express    = require('express'),
 // Variables
     port       = process.env.PORT || 9294,
     env        = process.env.NODE_ENV || 'development',
+    publicPath = __dirname + '/public',
+    index      = publicPath + '/index.html',
     address, serverHostname, serverPort, serverLocation, makeRequest, isEmptyObject, serialize,
 
 // Create Server
@@ -26,8 +28,8 @@ server.configure(function() {
   
   // Routing
   server.use(server.router);
-  server.use(express.static('public'));
-  //server.use(express.directory(publicPath));
+  server.use(express.static(publicPath));
+  server.use(express.directory(publicPath));
 });
 
 isEmptyObject = function( obj ) {
@@ -73,6 +75,10 @@ makeRequest = function(req, rsp) {
 };
 
 server.all('/api', makeRequest);
+server.get('/', function(req, res) {
+  res.contentType(index);
+  res.sendfile(index);
+});
 
 // Listen
 server.listen(port, function() {
