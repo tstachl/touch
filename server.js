@@ -79,9 +79,8 @@ server.configure(function() {
 
 //server.all('/api', makeRequest);
 server.get('/', function(req, res) {
-  res.send('Hello World!');
-  // res.contentType(index);
-  // res.sendfile(index);
+  res.contentType(index);
+  res.sendfile(index);
 });
 
 // Listen
